@@ -55,8 +55,8 @@
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/audiorestoration_tool.git
-cd audiorestoration_tool
+git clone https://github.com/nicocodeevo-ux/audioclean.git
+cd audioclean
 ```
 
 2. **Create and activate virtual environment**
@@ -149,10 +149,11 @@ Bass Enhancement EQ:
 ## 📁 Project Structure
 
 ```
-audiorestoration_tool/
+audioclean_evo/
 ├── studio/
 │   ├── audio_processor.py           # Core analysis & restoration
 │   ├── audio_processor_restoration.py # Professional restoration algorithms
+│   ├── audio_analysis.py            # Audio analysis algorithms
 │   ├── models.py                     # Database models
 │   ├── views.py                      # Django views/API endpoints
 │   └── urls.py                       # URL routing
@@ -221,7 +222,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions, suggestions, or issues:
 - Open an issue on GitHub
-- Email: your.email@example.com
+- Repository: https://github.com/nicocodeevo-ux/audioclean
 
 ## 🗺️ Roadmap
 
