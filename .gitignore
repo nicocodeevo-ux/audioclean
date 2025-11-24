@@ -1,0 +1,58 @@
+# Python
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media files (uploaded audio)
+media/audio/processed/*
+media/audio/profiles/*
+!media/audio/processed/.gitkeep
+!media/audio/profiles/.gitkeep
+
+# Static files (collected)
+staticfiles/
+static_root/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+
+# Test files
+*.wav
+*.mp3
+!test_audio.wav
+
+# Secrets
+.env
+*.pem
+*.key
+
+# Temporary files
+tmp/
+temp/

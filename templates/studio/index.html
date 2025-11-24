@@ -1,0 +1,303 @@
+{% extends 'studio/base.html' %}
+
+{% block content %}
+<!-- Professional Minimalist Splash Screen -->
+<div class="splash-screen" id="splashScreen">
+    <div class="splash-logo-container">
+        {% load static %}
+        <img src="{% static 'images/logo-icon.png' %}" alt="AudioClean Evo" class="splash-logo">
+    </div>
+    <h1 class="splash-title">AudioClean Evo</h1>
+    <p class="splash-subtitle">PROFESSIONAL AUDIO RESTORATION</p>
+    <div class="splash-loader">
+        <div class="splash-loader-bar"></div>
+        <div class="splash-loader-bar"></div>
+        <div class="splash-loader-bar"></div>
+        <div class="splash-loader-bar"></div>
+        <div class="splash-loader-bar"></div>
+    </div>
+    <div class="splash-version">v1.0.0 | Powered by AI</div>
+</div>
+
+<div class="app-container">
+    <!-- Sidebar: File Management -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>AudioClean <span class="accent">Evo</span></h2>
+        </div>
+
+        <div class="upload-section">
+            <div id="dropZone" class="drop-zone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drop Audio Here</p>
+                <input type="file" id="fileInput" hidden accept="audio/*">
+            </div>
+        </div>
+
+        <div class="file-list-container">
+            <h3>Project Files</h3>
+            <div class="file-list" id="fileList">
+                {% for project in projects %}
+                <div class="file-item" data-id="{{ project.id }}"
+                    data-url="{% if project.processed_file %}{{ project.processed_file.url }}{% else %}{{ project.original_file.url }}{% endif %}">
+                    <div class="file-icon"><i class="fas fa-music"></i></div>
+                    <div class="file-details">
+                        <span class="file-name">{{ project.name }}</span>
+                        <span class="file-date">{{ project.created_at|date:"M d, H:i" }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content: Dashboard -->
+    <main class="dashboard">
+        <!-- Top Bar: Status & Transport -->
+        <header class="top-bar">
+            <div class="file-status">
+                <span id="currentFileName">No File Selected</span>
+                <div class="badges">
+                    <span class="badge" id="sampleRateBadge">-- Hz</span>
+                    <span class="badge" id="channelsBadge">-- Ch</span>
+                    <span class="badge" id="durationBadge">-- s</span>
+                </div>
+            </div>
+            <div class="transport">
+                <button id="playPauseBtn" class="transport-btn"><i class="fas fa-play"></i></button>
+                <button id="stopBtn" class="transport-btn"><i class="fas fa-stop"></i></button>
+            </div>
+            <div class="actions">
+                <button class="btn-secondary" id="toggleSpectrogram">Spectrogram</button>
+            </div>
+        </header>
+
+        <!-- Visualizer Section (Compact) -->
+        <section class="visualizer-card">
+            <div id="waveform" class="waveform-view"></div>
+            <div id="spectrogram" class="spectrogram-view"></div>
+            <div id="timeline" class="timeline-view"></div>
+        </section>
+
+        <!-- Tools Grid: 3 Columns -->
+        <section class="tools-grid-3col">
+            <!-- Left Column: Analysis & Mix Report -->
+            <div class="column-left">
+                <!-- Combined Analysis & Artifacts Card -->
+                <div class="card analysis-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Analysis & Artifacts</h3>
+                        <button class="btn-small" id="analyzeBtn">Run Analysis</button>
+                    </div>
+                    <div id="analysisProgress" class="progress-bar-container" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="progress-text">Analyzing audio...</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <label>LUFS</label>
+                            <span class="value" id="lufsValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>True Peak</label>
+                            <span class="value" id="truePeakValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Noise Floor</label>
+                            <span class="value" id="noiseValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Clipping</label>
+                            <span class="value" id="clipValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Clicks</label>
+                            <span class="value" id="clicksValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Hum</label>
+                            <span class="value" id="humValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Silence</label>
+                            <span class="value" id="silenceValue">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>DC Offset</label>
+                            <span class="value" id="dcValue">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mix Report Card -->
+                <div class="card report-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Mix Report</h3>
+                        <button class="btn-small" id="downloadReport">Download Report</button>
+                    </div>
+                    <div id="suggestionsContainer" class="suggestions-container">
+                        <p class="placeholder-text">Run analysis to generate report...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Restoration Hub -->
+            <div class="column-middle">
+                <div class="card restoration-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tools"></i> Restoration Tools</h3>
+                    </div>
+                    <div class="tools-list">
+                        <!-- Cleanup Tools -->
+                        <div class="tool-section">
+                            <h4 class="section-title"><i class="fas fa-broom"></i> Cleanup</h4>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Spectral Denoise</h5>
+                                    <p>Learn & Remove Noise</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-secondary btn-small" data-action="learn_noise">Learn</button>
+                                    <button class="btn-primary btn-small" data-action="denoise">Denoise</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Declipping</h5>
+                                    <p>Restore clipped audio</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="declip">Declip</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Click Removal</h5>
+                                    <p>Remove pops & clicks</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="remove_clicks">Remove
+                                        Clicks</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Hum Removal</h5>
+                                    <p>Remove 50/60Hz hum</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <select id="humFreq" class="input-dark input-small">
+                                        <option value="50">50 Hz</option>
+                                        <option value="60">60 Hz</option>
+                                    </select>
+                                    <button class="btn-primary btn-small" data-action="remove_hum">Remove Hum</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>DC Offset</h5>
+                                    <p>Remove DC offset</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="remove_dc">Remove DC</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamics Tools -->
+                        <div class="tool-section">
+                            <h4 class="section-title"><i class="fas fa-sliders-h"></i> Dynamics</h4>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Smart Normalize</h5>
+                                    <p>Target LUFS level</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <input type="number" id="targetLufs" value="-14" class="input-dark input-small"
+                                        step="0.1">
+                                    <button class="btn-primary btn-small" data-action="normalize">Normalize</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Compression</h5>
+                                    <p>Control dynamics</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="compress">Compress</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Limiter</h5>
+                                    <p>Prevent peaks</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="limit">Limit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tone Tools -->
+                        <div class="tool-section">
+                            <h4 class="section-title"><i class="fas fa-adjust"></i> Tone</h4>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>De-esser</h5>
+                                    <p>Reduce sibilance</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <button class="btn-primary btn-small" data-action="deess">De-ess</button>
+                                </div>
+                            </div>
+
+                            <div class="tool-row">
+                                <div class="tool-info">
+                                    <h5>Stereo Width</h5>
+                                    <p>Adjust width (0.5-2.0)</p>
+                                </div>
+                                <div class="tool-controls">
+                                    <input type="number" id="stereoWidth" value="1.0" class="input-dark input-small"
+                                        step="0.1" min="0" max="2">
+                                    <button class="btn-primary btn-small" data-action="stereo_width">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Auto Restoration -->
+            <div class="column-right">
+                <div class="card auto-restore-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-magic"></i> Auto Restoration</h3>
+                        <button class="btn-small" id="autoRestoreBtn">Auto Fix</button>
+                    </div>
+                    <div class="auto-restore-content">
+                        <p class="section-label">Intelligent restoration based on analysis</p>
+                        <div id="autoRestoreSteps" class="auto-steps-list">
+                            <p class="placeholder-text">Run analysis to see recommended fixes...</p>
+                        </div>
+                        <div class="auto-restore-actions" style="display: none;">
+                            <button class="btn-primary btn-full" id="applyAllBtn">Apply All Fixes</button>
+                            <p class="auto-note">This will apply fixes in optimal order</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

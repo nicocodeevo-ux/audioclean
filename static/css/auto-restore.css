@@ -1,0 +1,66 @@
+/* Auto Restoration Card Styles */
+.auto-restore-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+
+.auto-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.auto-step-item {
+    background: #161616;
+    padding: 10px 12px;
+    border-left: 3px solid var(--accent);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.auto-step-item strong {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.auto-step-item em {
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    font-style: normal;
+}
+
+.auto-restore-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #333;
+}
+
+.btn-full {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.8rem;
+}
+
+.auto-note {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 8px;
+    font-style: italic;
+}
