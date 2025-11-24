@@ -44,7 +44,17 @@
 - **Dark Mode**: Professional carbon-gray theme with yellow accents
 - **Responsive Design**: Optimized for professional studio workflows
 
-## 🚀 Quick Start
+## � Screenshots
+
+### Main Interface
+![AudioClean Evo Main Interface](static/images/screenshots/main-interface.png)
+*Professional 3-column layout with waveform visualization, restoration tools, and analysis panel*
+
+### Analysis Results & Mix Report
+![Analysis Results](static/images/screenshots/analysis-results.png)
+*Comprehensive audio analysis with AI-powered suggestions and professional engineering advice*
+
+## �🚀 Quick Start
 
 ### Prerequisites
 - Python 3.8 or higher
